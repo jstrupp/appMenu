@@ -38,22 +38,31 @@ struct SettingsView: View {
                         .font(.headline)
                     Spacer()
                     Button {
+                        // Add a new folder at root; you could also target selection if desired.
                         store.addFolder(named: "New Folder")
                     } label: {
                         Label("Add Folder", systemImage: "folder.badge.plus")
                     }
                     Button {
+                        let target = preferredTargetFolderID()
                         pickApplications { urls in
+                            // Dedupe within this batch and against existing at target level
+                            let existing = existingAppURLs(inParent: target)
+                            var seen: Set<URL> = []
                             for url in urls {
-                                store.addApp(url)
+                                let norm = url.standardizedFileURL
+                                guard !existing.contains(norm), !seen.contains(norm) else { continue }
+                                seen.insert(norm)
+                                store.addApp(url, to: target)
                             }
                         }
                     } label: {
                         Label("Add Apps", systemImage: "plus.app")
                     }
                     Button {
-                        // Import to root by default; adjust if you want to target a selected folder
-                        requestImport(to: nil)
+                        // Prefer selected folder; else root "Applications" if present; else root.
+                        let target = preferredTargetFolderID()
+                        requestImport(to: target)
                     } label: {
                         Label("Import from /Applications…", systemImage: "square.and.arrow.down")
                     }
@@ -119,6 +128,26 @@ struct SettingsView: View {
             }
         }
         .navigationViewStyle(.automatic)
+    }
+    
+    // Choose where to add/import apps:
+    // 1) If a folder is selected, target that folder.
+    // 2) Else, if a root folder named "Applications" exists, target it.
+    // 3) Else, add at root (nil).
+    private func preferredTargetFolderID() -> UUID? {
+        if let sel = selection, findFolder(id: sel, in: store.items) != nil {
+            return sel
+        }
+        return rootFolderID(named: "Applications")
+    }
+    
+    private func rootFolderID(named name: String) -> UUID? {
+        for item in store.items {
+            if case .folder(let f) = item, f.name == name {
+                return f.id
+            }
+        }
+        return nil
     }
     
     private func requestImport(to parentID: UUID?) {
@@ -567,32 +596,39 @@ private func displayName(for url: URL) -> String {
     return url.deletingPathExtension().lastPathComponent
 }
 
+// Updated scanner: includes /Applications, /System/Applications and CoreServices
 private func scanApplicationsInApplicationsFolder() async throws -> [URL] {
     let fm = FileManager.default
-    let base = URL(fileURLWithPath: "/Applications", isDirectory: true)
-    var found: [URL] = []
+    let roots: [URL] = [
+        URL(fileURLWithPath: "/Applications", isDirectory: true),
+        URL(fileURLWithPath: "/Applications/Utilities", isDirectory: true),
+        URL(fileURLWithPath: "/System/Applications", isDirectory: true),
+        URL(fileURLWithPath: "/System/Applications/Utilities", isDirectory: true),
+        URL(fileURLWithPath: "/System/Library/CoreServices", isDirectory: true)
+    ]
     
-    // Enumerate only top-level and one level deep (common app folders)
-    if let enumerator = fm.enumerator(at: base, includingPropertiesForKeys: [.isDirectoryKey, .isPackageKey], options: [.skipsHiddenFiles, .skipsPackageDescendants]) {
-        while let obj = (enumerator.nextObject() as AnyObject?) {
-            if let url = obj as? URL, url.pathExtension.lowercased() == "app" {
-                found.append(url)
+    var found: Set<URL> = []
+    
+    func enumerateApps(at base: URL) {
+        guard let enumerator = fm.enumerator(
+            at: base,
+            includingPropertiesForKeys: [.isDirectoryKey, .isPackageKey],
+            options: [.skipsHiddenFiles, .skipsPackageDescendants]
+        ) else { return }
+        for case let url as URL in enumerator {
+            if url.pathExtension.lowercased() == "app" {
+                found.insert(url.standardizedFileURL)
             }
         }
     }
-    // Include /Applications/Utilities as well (some enumerators may skip based on options)
-    let utilities = base.appendingPathComponent("Utilities", isDirectory: true)
-    if let enumerator = fm.enumerator(at: utilities, includingPropertiesForKeys: [.isDirectoryKey, .isPackageKey], options: [.skipsHiddenFiles, .skipsPackageDescendants]) {
-        while let obj = (enumerator.nextObject() as AnyObject?) {
-            if let url = obj as? URL, url.pathExtension.lowercased() == "app" {
-                found.append(url)
-            }
+    
+    for root in roots {
+        if (try? root.checkResourceIsReachable()) == true {
+            enumerateApps(at: root)
         }
     }
     
-    // Deduplicate
-    let unique = Array(Set(found))
-    return unique
+    return Array(found)
 }
 
 private struct ImportAppsSheet: View {
@@ -709,3 +745,4 @@ private extension Array where Element == NSItemProvider {
         }
     }
 }
+

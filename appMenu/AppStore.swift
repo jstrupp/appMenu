@@ -228,38 +228,43 @@ final class AppStore: ObservableObject {
         return url.deletingPathExtension().lastPathComponent
     }
     
+    // Updated scanner: includes /Applications, /System/Applications and CoreServices
     static func scanApplicationsInApplicationsFolder() async -> [URL] {
         await withCheckedContinuation { continuation in
             DispatchQueue.global(qos: .userInitiated).async {
                 let fm = FileManager.default
-                let base = URL(fileURLWithPath: "/Applications", isDirectory: true)
-                var found: [URL] = []
+                let roots: [URL] = [
+                    URL(fileURLWithPath: "/Applications", isDirectory: true),
+                    URL(fileURLWithPath: "/Applications/Utilities", isDirectory: true),
+                    URL(fileURLWithPath: "/System/Applications", isDirectory: true),
+                    URL(fileURLWithPath: "/System/Applications/Utilities", isDirectory: true),
+                    URL(fileURLWithPath: "/System/Library/CoreServices", isDirectory: true)
+                ]
                 
-                if let enumerator = fm.enumerator(at: base,
-                                                  includingPropertiesForKeys: [.isDirectoryKey, .isPackageKey],
-                                                  options: [.skipsHiddenFiles, .skipsPackageDescendants]) {
+                var found: Set<URL> = []
+                
+                func enumerateApps(at base: URL) {
+                    guard let enumerator = fm.enumerator(
+                        at: base,
+                        includingPropertiesForKeys: [.isDirectoryKey, .isPackageKey],
+                        options: [.skipsHiddenFiles, .skipsPackageDescendants]
+                    ) else { return }
                     for case let url as URL in enumerator {
                         if url.pathExtension.lowercased() == "app" {
-                            found.append(url)
+                            found.insert(url.standardizedFileURL)
                         }
                     }
                 }
-                // Include /Applications/Utilities explicitly
-                let utilities = base.appendingPathComponent("Utilities", isDirectory: true)
-                if let enumerator = fm.enumerator(at: utilities,
-                                                  includingPropertiesForKeys: [.isDirectoryKey, .isPackageKey],
-                                                  options: [.skipsHiddenFiles, .skipsPackageDescendants]) {
-                    for case let url as URL in enumerator {
-                        if url.pathExtension.lowercased() == "app" {
-                            found.append(url)
-                        }
+                
+                for root in roots {
+                    if (try? root.checkResourceIsReachable()) == true {
+                        enumerateApps(at: root)
                     }
                 }
                 
-                // Deduplicate
-                let unique = Array(Set(found))
-                continuation.resume(returning: unique)
+                continuation.resume(returning: Array(found))
             }
         }
     }
 }
+
