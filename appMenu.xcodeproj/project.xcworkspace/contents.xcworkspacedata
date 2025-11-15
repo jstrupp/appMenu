@@ -4,16 +4,4 @@
    <FileRef
       location = "self:">
    </FileRef>
-   <FileRef
-      location = "group:LICENSE">
-   </FileRef>
-   <FileRef
-      location = "group:README.md">
-   </FileRef>
-   <FileRef
-      location = "group:README 2.md">
-   </FileRef>
-   <FileRef
-      location = "group:README 3.md">
-   </FileRef>
 </Workspace>
