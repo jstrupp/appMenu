@@ -1,21 +1,30 @@
 # appMenu
 
-A SwiftUI-based macOS application for organizing and managing your installed apps in folders. Supports drag-and-drop, nested folders, and importing from `/Applications` or custom locations.
+**appMenu** is a SwiftUI-based macOS application that helps you organize and manage your installed apps using folders and a customizable outline. It provides intuitive drag-and-drop editing, supports nested folders, and makes it easy to import apps directly from your `/Applications` directory or from any other location.
+
+---
 
 ## Features
 
-- Organize your apps into folders and subfolders.
-- Drag and drop apps and folders to rearrange them.
-- Import apps from `/Applications` or any custom location.
-- Rename, delete, and manage your app and folder structure easily.
+- Organize apps into folders and subfolders
+- Drag and drop to rearrange apps and folders
+- Import apps from `/Applications` or any custom location
+- Rename, delete, and manage your app and folder structure easily
+- Context menus for quick actions
+- Built-in help and easy-to-use design
 
-## Getting Started
+---
 
-### Requirements
+## Requirements
 
-- macOS 12.0 or later
-- Xcode 13 or later
+- **macOS 12.0 (Monterey)** or later
+- **Xcode 13** or later
 
-### Building
+---
 
-1. Clone this repository:
+## Installation
+
+1. **Clone this repository:**
+    ```sh
+    git clone https://github.com/jstrupp/appMenu.git
+    cd appMenu
