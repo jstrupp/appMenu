@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>appMenu Help</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; line-height: 1.5; margin: 24px; color: #222; }
+  h1 { font-size: 28px; margin-top: 0; }
+  h2 { font-size: 20px; margin-top: 28px; }
+  a { color: #0b6dff; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  code, kbd { background: #f2f2f2; padding: 1px 4px; border-radius: 4px; }
+  .index { background: #fafafa; border: 1px solid #eee; padding: 12px; border-radius: 8px; }
+  .caption { color: #666; font-size: 13px; }
+  ul { margin-top: 8px; }
+</style>
+</head>
+<body>
+
+<h1>appMenu Help</h1>
+<p class="caption">Organize your applications into folders and launch them quickly from the menu bar or Dock.</p>
+
+<div class="index">
+  <strong>Index</strong>
+  <ul>
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="#launching">Launching Apps</a></li>
+    <li><a href="#open-settings">Opening Settings</a></li>
+    <li><a href="#settings-window">Settings Window</a></li>
+    <li><a href="#folders">Creating and Managing Folders</a></li>
+    <li><a href="#adding-apps">Adding Applications</a></li>
+    <li><a href="#import">Search and Checklist Import</a></li>
+    <li><a href="#reorder">Reordering and Drag-and-Drop</a></li>
+    <li><a href="#refresh">Refreshing Menus</a></li>
+    <li><a href="#quit">Quitting the App</a></li>
+    <li><a href="#persistence">Persistence</a></li>
+    <li><a href="#shortcuts">Keyboard Shortcuts</a></li>
+    <li><a href="#troubleshooting">Troubleshooting</a></li>
+    <li><a href="#privacy">Privacy and Permissions</a></li>
+    <li><a href="#tips">Tips</a></li>
+  </ul>
+</div>
+
+<h2 id="overview">Overview</h2>
+<p>appMenu lets you organize your apps into folders and access them from the menu bar and the Dock menu.</p>
+
+<h2 id="launching">Launching Apps</h2>
+<ul>
+  <li>Menu bar: click the grid icon, then click any app.</li>
+  <li>Dock: right-click the appMenu Dock icon and choose an app.</li>
+</ul>
+
+<h2 id="open-settings">Opening Settings</h2>
+<ul>
+  <li>Main window: click <strong>Open Settings</strong>.</li>
+  <li>Menu bar or Dock menu: choose <strong>Open Settings…</strong>.</li>
+</ul>
+
+<h2 id="settings-window">Settings Window</h2>
+<p>The Settings window shows a tree of folders and apps. Create folders, add apps, and reorder items. Changes are saved automatically.</p>
+
+<h2 id="folders">Creating and Managing Folders</h2>
+<ul>
+  <li>Add at root: toolbar → <strong>Add Folder</strong>.</li>
+  <li>Add inside a folder: folder row → <strong>+</strong> → <strong>Add Folder</strong>.</li>
+  <li>Rename: click the name and edit inline.</li>
+  <li>Delete: select and click <strong>Delete</strong> or the trash button.</li>
+</ul>
+
+<h2 id="adding-apps">Adding Applications</h2>
+<ol>
+  <li><strong>Root level</strong>
+    <ul>
+      <li>Toolbar → <strong>Add Apps</strong>: pick apps via an open panel.</li>
+      <li>Toolbar → <strong>Import from /Applications…</strong>: open a searchable checklist of apps.</li>
+    </ul>
+  </li>
+  <li><strong>Specific folder</strong>
+    <ul>
+      <li>Folder row → <strong>+</strong> → <strong>Add Apps…</strong>: pick apps; duplicates in that folder are skipped.</li>
+      <li>Folder row → <strong>+</strong> → <strong>Choose from /Applications…</strong>: open the checklist targeted to that folder; duplicates are skipped.</li>
+    </ul>
+  </li>
+</ol>
+
+<h2 id="import">Search and Checklist Import</h2>
+<ul>
+  <li>Filter by name or filename (e.g., “Microsoft”, “Adobe”).</li>
+  <li>Checkbox list for easy multi-select; use <strong>Select All</strong>/<strong>Select None</strong> on the filtered list.</li>
+  <li>Duplicates already present in the target folder (or root) are not added.</li>
+</ul>
+
+<h2 id="reorder">Reordering and Drag-and-Drop</h2>
+<ul>
+  <li>Drag items to reorder or move into folders.</li>
+  <li>Dropping onto a folder appends it as a child.</li>
+  <li>Cycles and no-op moves are prevented.</li>
+</ul>
+
+<h2 id="refresh">Refreshing Menus</h2>
+<ul>
+  <li>Menus update automatically as you edit.</li>
+  <li>Manual refresh: main window → <strong>Refresh Menus</strong>, or menu bar/Dock menu → <strong>Refresh</strong>.</li>
+</ul>
+
+<h2 id="quit">Quitting the App</h2>
+<ul>
+  <li>Menu bar or Dock menu → <strong>Quit</strong>, or quit from the app menu.</li>
+</ul>
+
+<h2 id="persistence">Persistence</h2>
+<p>Your setup is saved in Application Support and restored at launch.</p>
+
+<h2 id="shortcuts">Keyboard Shortcuts</h2>
+<ul>
+  <li>Enter/Return commits inline edits.</li>
+  <li>Delete removes the selected item.</li>
+  <li>In the import sheet: Return = <strong>Add Selected</strong>, Escape = <strong>Cancel</strong>.</li>
+</ul>
+
+<h2 id="troubleshooting">Troubleshooting</h2>
+<ul>
+  <li>If an app isn’t found by import, use <strong>Add Apps…</strong> to pick it from its location.</li>
+  <li>If you see apparent duplicates, they may be different copies on disk; duplicates within the same folder are skipped when adding.</li>
+  <li>On older macOS versions, a fallback Settings window is used.</li>
+</ul>
+
+<h2 id="privacy">Privacy and Permissions</h2>
+<p>appMenu reads your local filesystem to find and open apps. It stores configuration locally and requires no network access.</p>
+
+<h2 id="tips">Tips</h2>
+<ul>
+  <li>Group by vendor or role (e.g., “Microsoft”, “Adobe”, “Browsers”, “Editors”).</li>
+  <li>Use search + Select All in the import sheet to add many related apps at once.</li>
+</ul>
+
+</body>
+</html>
